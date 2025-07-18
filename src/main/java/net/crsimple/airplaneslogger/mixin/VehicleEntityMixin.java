@@ -4,7 +4,6 @@ import immersive_aircraft.entity.VehicleEntity;
 import net.crsimple.airplaneslogger.AirplanesLogger;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -15,39 +14,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(VehicleEntity.class)
-public class VehicleEntityMixin {
-    @Unique private Player airPlanesLogger$player = null;
+public abstract class VehicleEntityMixin {
     @Unique private String airPlanesLogger$owner;
 
-    @Inject(method = "hurt", at = @At(value = "HEAD"))
-    private void setInstance(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if(source.getEntity() instanceof Player player) {
-            this.airPlanesLogger$player = player;
-        }
-    }
     @Redirect(method = "hurt", at = @At(value = "INVOKE", target = "Limmersive_aircraft/entity/VehicleEntity;discard()V"))
     private void logPlaneBreakingCreative(VehicleEntity instance) {
         String ACTION = "убрал";
-
-        if(this.airPlanesLogger$player == null) {
-            return;
+        var pilot = instance.getPassengers().getFirst();
+        if(pilot instanceof Player player) {
+            AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(), player);
         }
-
-        AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(),this.airPlanesLogger$player);
         instance.discard();
     }
     @Redirect(method = "applyDamage", at = @At(value = "INVOKE", target = "Limmersive_aircraft/entity/VehicleEntity;discard()V"))
     private void logPlaneBreakingSurvival(VehicleEntity instance) {
         String ACTION = "убрал";
 
-        if(this.airPlanesLogger$player == null) {
-            return;
+        var pilot = instance.getPassengers().getFirst();
+        if(pilot instanceof Player player) {
+            AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(), player);
         }
-
-        AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(),this.airPlanesLogger$player);
         instance.discard();
     }
     @Redirect(method = "interact", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;startRiding(Lnet/minecraft/world/entity/Entity;)Z"))
