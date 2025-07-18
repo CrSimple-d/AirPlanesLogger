@@ -4,6 +4,7 @@ import immersive_aircraft.entity.VehicleEntity;
 import net.crsimple.airplaneslogger.AirplanesLogger;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,15 +15,32 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(VehicleEntity.class)
 public abstract class VehicleEntityMixin {
     @Unique private String airPlanesLogger$owner;
+    @Unique private Player airPlanesLogger$player;
+
+    @Inject(method = "hurt",at = @At(value = "HEAD"))
+    private void getPlayer(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if(source.getEntity() instanceof Player player) {
+            airPlanesLogger$player = player;
+        }
+    }
 
     @Redirect(method = "hurt", at = @At(value = "INVOKE", target = "Limmersive_aircraft/entity/VehicleEntity;discard()V"))
     private void logPlaneBreakingCreative(VehicleEntity instance) {
         String ACTION = "убрал";
-        var pilot = instance.getPassengers().getFirst();
+        Entity pilot = null;
+        if(instance.getPassengers().isEmpty()) {
+            if(airPlanesLogger$player != null) {
+                pilot = airPlanesLogger$player;
+            }
+        } else {
+            pilot = instance.getPassengers().getFirst();
+        }
+
         if(pilot instanceof Player player) {
             AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(), player);
         }
@@ -32,7 +50,16 @@ public abstract class VehicleEntityMixin {
     private void logPlaneBreakingSurvival(VehicleEntity instance) {
         String ACTION = "убрал";
 
-        var pilot = instance.getPassengers().getFirst();
+
+        Entity pilot = null;
+        if(instance.getPassengers().isEmpty()) {
+            if(airPlanesLogger$player != null) {
+                pilot = airPlanesLogger$player;
+            }
+        } else {
+            pilot = instance.getPassengers().getFirst();
+        }
+
         if(pilot instanceof Player player) {
             AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(), player);
         }
