@@ -1,0 +1,46 @@
+package net.crsimple.airplaneslogger;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.logging.LogUtils;
+import net.crsimple.airplaneslogger.commands.OwnerCommand;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.IModBusEvent;
+import net.neoforged.neoforge.event.CommandEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Mod(AirplanesLogger.MOD_ID)
+public class AirplanesLogger {
+    public static final String MOD_ID = "airplanes_logger";
+    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final String LOG_PATTERN = "Игрок: {}, {} самолет({}) с именем: {}, X: {} Y: {} Z: {}";
+
+    public AirplanesLogger(IEventBus modEventBus, ModContainer modContainer) {
+        LOGGER.info("Initializing {}",MOD_ID);
+    }
+
+    public static void log(String action, String id, Component name, Player user) {
+        var pos = user.getOnPos();
+        if(user.getDisplayName() != null && name != null) {
+            AirplanesLogger.LOGGER.info(AirplanesLogger.LOG_PATTERN, user.getDisplayName().getString(), action, id, name.getString(),
+                    pos.getX(), pos.getY(), pos.getZ()
+            );
+        }
+    }
+    @EventBusSubscriber(modid = AirplanesLogger.MOD_ID,value = {Dist.CLIENT,Dist.DEDICATED_SERVER})
+    static class ModCommands {
+        @SubscribeEvent
+        public static void registerCommands(RegisterCommandsEvent e) {
+            OwnerCommand.reg(e.getDispatcher());
+        }
+    }
+}

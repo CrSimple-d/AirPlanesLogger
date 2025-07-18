@@ -1,0 +1,8 @@
+{
+  "command.airplanes_logger.owner.too_few_args": "Слишком мало аргументов команды",
+  "command.airplanes_logger.owner.plane_item_not_found": "Возьмите самолет в руку",
+  "command.airplanes_logger.owner.info": "Владелец этого самолета: %s",
+  "command.airplanes_logger.owner.set": "Владелец успешно изменен на %s",
+  "command.airplanes_logger.owner.none_info": "Владелец самолета не установлен",
+  "command.airplanes_logger.owner.no_enough_perms": "Недостаточно прав"
+}

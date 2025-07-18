@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.crsimple.airplaneslogger.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "VehicleEntityMixin",
+    "VehicleItemMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

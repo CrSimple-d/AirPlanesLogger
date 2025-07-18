@@ -1,0 +1,8 @@
+{
+  "command.airplanes_logger.owner.too_few_args": "Too few arguments",
+  "command.airplanes_logger.owner.plane_item_not_found": "Take any plane in your hand",
+  "command.airplanes_logger.owner.info": "Owner of this plane: %s",
+  "command.airplanes_logger.owner.set": "Owner successfully changed to %s",
+  "command.airplanes_logger.owner.none_info": "Plane owner doesn't set",
+  "command.airplanes_logger.owner.no_enough_perms": "No enough permissions"
+}
