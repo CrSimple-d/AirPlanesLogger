@@ -25,7 +25,7 @@ public class VehicleItemMixin implements OwnerItemData {
         var plane = user.getItemInHand(hand);
 
         if(plane.getItem() != Items.AIR) {
-            AirplanesLogger.log(ACTION,plane.getDescriptionId(), plane.getDisplayName(),user);
+            AirplanesLogger.log(ACTION,plane.getDescriptionId(), plane.getDisplayName(),user,getOwner(plane));
         }
     }
 

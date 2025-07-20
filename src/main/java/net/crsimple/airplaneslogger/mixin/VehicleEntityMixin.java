@@ -42,7 +42,7 @@ public abstract class VehicleEntityMixin {
         }
 
         if(pilot instanceof Player player) {
-            AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(), player);
+            AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(), player, airPlanesLogger$owner);
         }
         instance.discard();
     }
@@ -61,7 +61,7 @@ public abstract class VehicleEntityMixin {
         }
 
         if(pilot instanceof Player player) {
-            AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(), player);
+            AirplanesLogger.log(ACTION, instance.getEncodeId(), ((Entity) instance).getDisplayName(), player, airPlanesLogger$owner);
         }
         instance.discard();
     }
@@ -75,7 +75,7 @@ public abstract class VehicleEntityMixin {
         var result = user.startRiding(entity);
 
         if(result) {
-            AirplanesLogger.log(ACTION, entity.getEncodeId(), entity.getDisplayName(), user);
+            AirplanesLogger.log(ACTION, entity.getEncodeId(), entity.getDisplayName(), user, airPlanesLogger$owner);
             return true;
         }
         return false;
